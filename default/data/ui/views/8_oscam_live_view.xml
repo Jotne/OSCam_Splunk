@@ -1,0 +1,111 @@
+<form>
+  <label>8. OSCam Live view</label>
+  <description>Here you have two view tha show what information OSCam sends out. It.s separated in Ecm and Other info view.</description>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="global_time">
+      <label>Time frame</label>
+      <default>
+        <earliest>rt-1m</earliest>
+        <latest>rt</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="Host" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam |
+          top host</query>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Client" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam
+          client="*"
+          host=$Host$ |
+          top limit=0 client</query>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>client</fieldForLabel>
+      <fieldForValue>client</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Server" searchWhenChanged="true">
+      <label>Reader/Proxy(Server)</label>
+      <search>
+        <query>sourcetype=oscam
+          server="*"
+          host=$Host$ |
+          top limit=0 server</query>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>server</fieldForLabel>
+      <fieldForValue>server</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Status" searchWhenChanged="true">
+      <search>
+        <query>client=* |
+          top limit=0 ecm</query>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </search>
+      <fieldForLabel>ecm</fieldForLabel>
+      <fieldForValue>ecm</fieldForValue>
+      <choice value="*">Any</choice>
+      <default>*</default>
+    </input>
+    <input type="text" token="Text" searchWhenChanged="true">
+      <label>Free text</label>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <title>Ecm</title>
+        <search>
+          <query>sourcetype=oscam
+            host=$Host$
+            client=$Client$
+            server=$Server$
+            ecm=$Status$
+            $Text$ |
+            fields _time, host, client, ecm, server, channel, response_time |
+            fields - _raw</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">cell</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Other info (clients/readers reconnecting, load balance statistics, emm handling, reload info +++)</title>
+        <search>
+          <query>sourcetype=oscam             host=$Host$             NOT ecm=* |             fields _time, host, server, client, eventtype |             fields - _raw</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
+        </search>
+        <option name="wrap">undefined</option>
+        <option name="rowNumbers">undefined</option>
+        <option name="drilldown">row</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+</form>
