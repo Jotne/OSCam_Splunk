@@ -1,0 +1,97 @@
+<h1>About the OSCam app for Splunk</h1>
+
+
+<p>
+     This OSCam app provides a hands-on way to see what is going on with your OSCam Server.
+
+</p>
+<p>
+     Now that you've installed the app, you may like to know what the different dashboards gives you.
+</p>
+
+     <h4>Definition</h4>
+     <ul>
+          <li>
+               <b>Time frame</b><br/>
+               The time windows you are looking at. Often set to last 24 hour<br/><br/>
+          </li>
+          <li>
+               <b>Time span</b><br/>
+               Defining how often a graph shall be updated. Default 10 min.<br/><br/>
+          </li>
+          <li>
+               <b>Host</b><br/>
+               This is one OSCam server.  Splunk can monitor several OSCam severs (hosts) at the same time.<br/><br/>
+          </li>
+          <li>
+               <b>Client</b><br/>
+               A client connects to you and gets ecm from your host<br/><br/>
+          </li>
+          <li>
+               <b>Reader/Proxy(Server)</b><br/>
+               Proxy is a local reader or an emualator. Reader is your host connecting to another host to get ecm.<br/>
+               Both Proxy and Reader are in the Server section of the config files.<br/><br/>
+          </li>
+      </ul>
+
+     <h4>Dashboards</h4>
+     <ul>
+          <li>
+               <b>1. OSCam Channels Usage Timeline</b><br/>
+               What channels are your client looking at? Drill down and you will see.<br/>
+               If you select one client, you can see what ecm request he makes.<br/><br/>
+          </li>
+          <li>
+               <b>2. OSCam Channels requested</b><br/>
+               You see here what channels are decoded by a specific reader/proxy (server) or by Client.<br/>
+               Have you added a new reader(server) and like to see what channels he give ecm for,<br/>
+               just select him from the drop down list.  If list is blank, he gives nothing.<br/>
+               You can do the same for a client.  Select one and you all request hi has made.<br/><br/>
+          </li>
+          <li>
+               <b>3. OSCam Channels decoded</b><br/>
+               Show what channels are decoded or not decoded, sorted by number of hits and by clients.<br/>
+               You can drill down to host and/or server.<br/><br/>
+          </li>
+          <li>
+               <b>4. OSCam Channels not in oscam.srvid</b><br/>
+               Show what channels are not listed in oscam.srvid(2). Update the file exits this list.<br/>
+               To make most of this dashboards to look nice, you need an oscam.srvid file.<br/>
+               If a channel is not listed in the file, you see here caid:sid@pvid so you can search or add the id<br/><br/>
+          </li>
+          <li>
+               <b>5. OSCam Clents ecm requests</b><br/>
+               Ecm request sorted by hits of Client and by Reader/Proxy(Server) or Channel.<br/><br/>
+          </li>
+          <li>
+               <b>6. OScam Reader Connections activities</b><br/>
+               Whats going on with your OSCam server? Some panels are hidden if they show no data.<br/><br/>
+          </li>
+          <li>
+               <b>7. OScam Clients Connections activities</b><br/>
+               Whats going on with your OSCam server? Some panels are hidden if they show no data.<br/><br/>
+          </li>
+
+          <li>
+               <b>8. OSCam Live view</b><br/>
+               Here you have two view that shows what information OSCam sends out.  Its separated in <b>Ecm</b> and <b>Other info</b> view.<br/>
+               <b>Ecm</b> gives you all Ecm request OSCam host handles<br/>
+               <b>Other info</b> shows the rest.  Like loadbalance statistics saved. Readers/Clients connecting. Errors etc.<br/><br/>
+          </li>
+          <li>
+               <b>9. OSCam Clients map location</b><br/>
+               Not all ISP shows city (shows unknown) but all shows country correct. Zoom in to see better location.<br/><br/>
+          </li>
+          <li>
+               <b>10. OSCam Restarts</b><br/>
+               When OSCam restarts, it will create a log entry showing that it starts.<br/>
+               Second panel shows someone do a soft restart of OSCam from GUI<br/><br/>
+          </li>
+          <li>
+               <b>11. OSCam Overview</b><br/>
+               Show a quick view of all the information as numbers<br/><br/>
+          </li>
+
+     </ul>
+</p>
+
