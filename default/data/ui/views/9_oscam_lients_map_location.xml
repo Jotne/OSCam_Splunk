@@ -1,0 +1,82 @@
+<form>
+  <label>9. OSCam Clients map location</label>
+  <description>Not all ISP shows city (shows unknown) but all shows country correct. Zoom in to see better location.</description>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="global_time">
+      <label>Time frame</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="Host" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam |
+          top host</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Client" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam
+          client="*"
+          host=$Host$ |
+          top limit=0 client |
+          sort client</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>client</fieldForLabel>
+      <fieldForValue>client</fieldForValue>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <map>
+        <search>
+          <query>sourcetype=oscam src_ip="*"
+            host=$Host$
+            client=$Client$
+            client!=anonymous
+            eventtype="oscam_client-granted" |
+            iplocation src_ip |
+            eval City = if(isnull(City) OR City="", "Unknown", City) |
+            eval Home = client." ".City."-".Country |
+            dedup Home |
+            geostats globallimit=0 count by Home</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
+        </search>
+        <option name="mapping.type">marker</option>
+        <option name="mapping.choroplethLayer.colorBins">5</option>
+        <option name="mapping.choroplethLayer.colorMode">auto</option>
+        <option name="mapping.choroplethLayer.maximumColor">0xDB5800</option>
+        <option name="mapping.choroplethLayer.minimumColor">0x2F25BA</option>
+        <option name="mapping.choroplethLayer.neutralPoint">0</option>
+        <option name="mapping.choroplethLayer.shapeOpacity">0.75</option>
+        <option name="mapping.choroplethLayer.showBorder">1</option>
+        <option name="mapping.data.maxClusters">100</option>
+        <option name="mapping.map.center">(0,0)</option>
+        <option name="mapping.map.panning">true</option>
+        <option name="mapping.map.scrollZoom">false</option>
+        <option name="mapping.map.zoom">2</option>
+        <option name="mapping.markerLayer.markerMaxSize">50</option>
+        <option name="mapping.markerLayer.markerMinSize">10</option>
+        <option name="mapping.markerLayer.markerOpacity">0.8</option>
+        <option name="mapping.showTiles">1</option>
+        <option name="mapping.tileLayer.maxZoom">11</option>
+        <option name="mapping.tileLayer.minZoom">2</option>
+        <option name="mapping.tileLayer.tileOpacity">1</option>
+        <option name="mapping.tileLayer.url">http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</option>
+        <option name="drilldown">none</option>
+      </map>
+    </panel>
+  </row>
+</form>
