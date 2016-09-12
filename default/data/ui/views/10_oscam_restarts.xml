@@ -12,8 +12,8 @@
     <input type="dropdown" token="Host" searchWhenChanged="true">
       <search>
         <query>sourcetype=oscam |           top host</query>
-        <earliest>-24h@h</earliest>
-        <latest>now</latest>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
       <fieldForLabel>host</fieldForLabel>
@@ -24,7 +24,7 @@
   <row>
     <panel>
       <chart>
-        <title>Starting</title>
+        <title>Starting up (may be due to restart from Web GUI, kill of services, reboot of server etc)</title>
         <search>
           <query>sourcetype=oscam             "System name"              host=$Host$ |             timechart count by host limit=0</query>
           <earliest>$global_time.earliest$</earliest>
@@ -59,7 +59,7 @@
   <row>
     <panel>
       <chart>
-        <title>Restart requested</title>
+        <title>Restart requested from Web GUI</title>
         <search>
           <query>sourcetype=oscam "restart oscam requested"| timechart count by host limit=0</query>
           <earliest>$global_time.earliest$</earliest>
