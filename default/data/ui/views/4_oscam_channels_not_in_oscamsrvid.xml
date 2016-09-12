@@ -1,11 +1,11 @@
 <form>
-  <label>4. OSCam Channels not in oscam.srvid</label>
-  <description>Show what channels are not listed in oscam.srvid(2). Update the file exits this list.</description>
-  <fieldset submitButton="false" autoRun="true">
-    <input type="time" searchWhenChanged="true">
+  <label>4. OSCam Channels requested</label>
+  <description>You can here see what channels are requested from a specific reader/proxy (server) or by Client.</description>
+  <fieldset autoRun="true" submitButton="false">
+    <input type="time" token="global_time" searchWhenChanged="true">
       <label>Time frame</label>
       <default>
-        <earliest>-24h@h</earliest>
+        <earliest>-15m</earliest>
         <latest>now</latest>
       </default>
     </input>
@@ -13,55 +13,73 @@
       <search>
         <query>sourcetype=oscam |
           top host</query>
-        <earliest>-24h@h</earliest>
-        <latest>now</latest>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
       <fieldForLabel>host</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
+    <input type="dropdown" token="Client" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam
+          client="*"
+          host=$Host$ |
+          top limit=0 client |
+          sort client</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>client</fieldForLabel>
+      <fieldForValue>client</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Server" searchWhenChanged="true">
+      <label>Reader/Proxy(Server)</label>
+      <search>
+        <query>sourcetype=oscam
+          server="*"
+          host=$Host$ |
+          top limit=0 server</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>server</fieldForLabel>
+      <fieldForValue>server</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="radio" token="found" searchWhenChanged="true">
+      <label>Found/not Found ecm?</label>
+      <choice value="oscam_status-*found">Both</choice>
+      <choice value="oscam_status-found">Found</choice>
+      <choice value="oscam_status-notfound">Not found</choice>
+      <default>oscam_status-found</default>
+    </input>
   </fieldset>
   <row>
     <panel>
-      <chart>
+      <table>
         <search>
           <query>sourcetype=oscam
-            ecm=found OR ecm=cache* NOT channel="*"
-            host=$Host$ |
-            eval oscam_channel = caid.":".sid."@".pvid |
-            chart count over oscam_channel by client |
-            addtotals fieldname=Total |
-            table oscam_channel Total * |
-            sort - Total |
-            head 10 |
-            fields - Total</query>
+            host=$Host$
+            server=$Server$
+            client=$Client$
+            eventtype="$found$" |
+            eval Channel = if(isnull(channel), sid.":".caid."@".pvid, channel) |
+            top limit=0 Channel</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
         </search>
-        <option name="charting.chart">bar</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
-        <option name="height">400</option>
-      </chart>
+        <option name="count">20</option>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">cell</option>
+      </table>
     </panel>
   </row>
 </form>
