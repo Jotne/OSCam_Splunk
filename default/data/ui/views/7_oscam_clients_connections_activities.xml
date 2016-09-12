@@ -1,10 +1,13 @@
 <form>
-  <label>7. OScam Clients Connections activities</label>
-  <description>What.s going on with your OSCam server? Some panels may be hidden if they show no data.</description>
-  <fieldset autoRun="true" submitButton="false">
+  <label>7. OSCam Clients ecm requests</label>
+  <description>Ecm request sorted by hits of Client and by Reader/Proxy(Server) or Channels.</description>
+  <fieldset submitButton="false">
     <input type="time" token="global_time" searchWhenChanged="true">
       <label>Time frame</label>
-      <default>Last 24 hours</default>
+      <default>
+        <earliest>rt-5m</earliest>
+        <latest>rt</latest>
+      </default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
       <search>
@@ -18,64 +21,40 @@
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
-    <input type="dropdown" token="Client" searchWhenChanged="true">
-      <search>
-        <query>sourcetype=oscam
-          client="*"
-          host=$Host$
-          eventtype="oscam_client*" |
-          top limit=0 client</query>
-        <earliest>$global_time.earliest$</earliest>
-        <latest>$global_time.latest$</latest>
-      </search>
-      <choice value="*">Any</choice>
-      <fieldForLabel>client</fieldForLabel>
-      <fieldForValue>client</fieldForValue>
-      <default>*</default>
-    </input>
-    <input type="dropdown" token="Span" searchWhenChanged="true">
-      <label>Time span</label>
-      <default>10</default>
-      <choice value="1">1 min</choice>
-      <choice value="5">5 min</choice>
-      <choice value="10">10 min</choice>
-      <choice value="20">20 min</choice>
-      <choice value="60">1 hour</choice>
-      <choice value="120">2 hour</choice>
+    <input type="radio" token="by" searchWhenChanged="true">
+      <label>Sort by</label>
+      <choice value="channel">Channels</choice>
+      <choice value="server">Reader/Proxy(Server)</choice>
+      <default>channel</default>
     </input>
   </fieldset>
   <row>
-    <panel depends="$panel_show1$">
-      <title>1. Client granted (shows client connect to OSCam server)</title>
+    <panel>
       <chart>
+        <title>ecm request last $global_time.earliest$ by client</title>
         <search>
           <query>sourcetype=oscam
-            eventtype="oscam_client-granted"
-            client=$Client$
+            ecm=found OR ecm=cache*
             host=$Host$ |
-            timechart
-            span=$Span$m count by client limit=0</query>
+            chart limit=25 count over client by $by$ |
+            addtotals fieldname=Total |
+            table client Total * |
+            sort - Total |
+            head 25 |
+            fields - Total</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
-          <progress>
-            <condition match="'job.resultCount' &gt; 0">
-              <set token="panel_show1">true</set>
-            </condition>
-            <condition>
-              <unset token="panel_show1"></unset>
-            </condition>
-          </progress>
         </search>
+        <option name="charting.chart">bar</option>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
         <option name="charting.axisTitleY2.visibility">visible</option>
         <option name="charting.axisX.scale">linear</option>
         <option name="charting.axisY.scale">linear</option>
         <option name="charting.axisY2.enabled">0</option>
         <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">column</option>
         <option name="charting.chart.bubbleMaximumSize">50</option>
         <option name="charting.chart.bubbleMinimumSize">10</option>
         <option name="charting.chart.bubbleSizeBy">area</option>
@@ -85,206 +64,11 @@
         <option name="charting.chart.stackMode">stacked</option>
         <option name="charting.chart.style">shiny</option>
         <option name="charting.drilldown">all</option>
-        <option name="height">400</option>
         <option name="charting.layout.splitSeries">0</option>
         <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
         <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
         <option name="charting.legend.placement">right</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
-    <panel depends="$panel_show2$">
-      <title>2. Client disconnected (show clients disconnect from OSCam server)</title>
-      <chart>
-        <search>
-          <query>sourcetype=oscam
-            eventtype="oscam_client-disconnected"
-            client=$Client$
-            host=$Host$ |
-            timechart  span=$Span$m count by client limit=0</query>
-          <earliest>$global_time.earliest$</earliest>
-          <latest>$global_time.latest$</latest>
-          <progress>
-            <condition match="'job.resultCount' &gt; 0">
-              <set token="panel_show2">true</set>
-            </condition>
-            <condition>
-              <unset token="panel_show2"></unset>
-            </condition>
-          </progress>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">column</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
         <option name="height">400</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
-    <panel depends="$panel_show3$">
-      <title>3. Duplicate Clients. (Clients try to log in more than the max limit set)</title>
-      <chart>
-        <search>
-          <query>sourcetype=oscam
-            eventtype="oscam_client-duplicate"
-            client=$Client$
-            host=$Host$ |
-            timechart  span=$Span$m count by client limit=0</query>
-          <earliest>$global_time.earliest$</earliest>
-          <latest>$global_time.latest$</latest>
-          <progress>
-            <condition match="'job.resultCount' &gt; 0">
-              <set token="panel_show3">true</set>
-            </condition>
-            <condition>
-              <unset token="panel_show3"></unset>
-            </condition>
-          </progress>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">column</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="height">400</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
-    <panel depends="$panel_show4$">
-      <title>4. Client not found. (Clients try to log in without an account)</title>
-      <chart>
-        <search>
-          <query>sourcetype=oscam
-            host=$Host$
-            client=$Client$ OR client=anonymous
-            eventtype="oscam_client-disconnected" OR eventtype="oscam_client-not-found" |
-            transaction session_id |
-            search eventtype="oscam_client-disconnected" eventtype="oscam_client-not-found" |<![CDATA[rex "account '(?<user>[^']+)'"]]>|
-            eval info=user."@".src_ip |
-            timechart  span=$Span$m count by info limit=0</query>
-          <earliest>$global_time.earliest$</earliest>
-          <latest>$global_time.latest$</latest>
-          <progress>
-            <condition match="'job.resultCount' &gt; 0">
-              <set token="panel_show4">true</set>
-            </condition>
-            <condition>
-              <unset token="panel_show4"></unset>
-            </condition>
-          </progress>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">column</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="height">400</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
-    <panel depends="$panel_show5$">
-      <title>5. Invalid. (Clients is disabled or tries to log inn with wrong password)</title>
-      <chart>
-        <search>
-          <query>sourcetype=oscam
-            eventtype="oscam_client-wrong-password-or-disabled"
-            client=$Client$
-            host=$Host$ |
-            timechart  span=$Span$m count by client limit=0</query>
-          <earliest>$global_time.earliest$</earliest>
-          <latest>$global_time.latest$</latest>
-          <progress>
-            <condition match="'job.resultCount' &gt; 0">
-              <set token="panel_show5">true</set>
-            </condition>
-            <condition>
-              <unset token="panel_show5"></unset>
-            </condition>
-          </progress>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">column</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="height">400</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
       </chart>
     </panel>
   </row>
