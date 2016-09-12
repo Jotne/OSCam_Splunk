@@ -1,18 +1,22 @@
 <nav color="#6699ff">
   <collection label="Views">
-    <view name="1_oscam_channels_usage_timeline" default='true'/>
-    <view name="2_oscam_channels_requested"/>
-    <view name="3_oscam_channels_decoded"/>
-    <view name="4_oscam_channels_not_in_oscamsrvid"/>
-    <view name="5_oscam_clients_ecm_requests"/>
-    <view name="6_oscam_readers_connections_activities"/>
-    <view name="7_oscam_clients_connections_activities"/>
+    <view name="1_oscam_readers_connections_activities" default='true'/>
+    <view name="2_oscam_clients_connections_activities"/>
+    <view name="3_oscam_channels_usage_timeline"/>
+    <view name="4_oscam_channels_requested"/>
+    <view name="5_oscam_channels_decoded"/>
+    <view name="6_oscam_channels_not_in_oscamsrvid"/>
+    <view name="7_oscam_clients_ecm_requests"/>
     <view name="8_oscam_live_view"/>
     <view name="9_oscam_lients_map_location"/>
     <view name="10_oscam_restarts"/>
     <view name="11_oscam_overview"/>
+    <view name="12_oscam_config_changes"/>
+    <view name="13_oscam_not_found"/>
   </collection>
   <view name="information"/>
   <view name="reports"/>
   <view name="dashboards"/>
+  <view name="search"/>
 </nav>
+
