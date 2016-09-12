@@ -13,8 +13,8 @@
       <search>
         <query>sourcetype=oscam |
           top host</query>
-        <earliest>-4h@m</earliest>
-        <latest>now</latest>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
       <fieldForLabel>host</fieldForLabel>
@@ -27,8 +27,8 @@
           client="*"
           host=$Host$ |
           top limit=0 client</query>
-        <earliest>-4h@m</earliest>
-        <latest>now</latest>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
       <fieldForLabel>client</fieldForLabel>
@@ -42,8 +42,8 @@
           server="*"
           host=$Host$ |
           top limit=0 server</query>
-        <earliest>-4h@m</earliest>
-        <latest>now</latest>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
       <fieldForLabel>server</fieldForLabel>
@@ -54,8 +54,8 @@
       <search>
         <query>client=* |
           top limit=0 ecm</query>
-        <earliest>-4h@m</earliest>
-        <latest>now</latest>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
       </search>
       <fieldForLabel>ecm</fieldForLabel>
       <fieldForValue>ecm</fieldForValue>
