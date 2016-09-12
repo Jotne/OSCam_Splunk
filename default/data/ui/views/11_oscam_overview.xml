@@ -55,7 +55,7 @@
         <title>6.2 No route to host</title>
         <search>
           <query>sourcetype=oscam
-            eventtype="oscam_no-route-to-host"
+            eventtype="oscam_reader-no-route-to-host"
             host=$Host$ |
             timechart count</query>
           <earliest>$global_time.earliest$</earliest>
