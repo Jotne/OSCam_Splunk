@@ -8,7 +8,7 @@
     <view name="6_oscam_channels_not_in_oscamsrvid"/>
     <view name="7_oscam_clients_ecm_requests"/>
     <view name="8_oscam_live_view"/>
-    <view name="9_oscam_lients_map_location"/>
+    <view name="9_oscam_clients_map_location"/>
     <view name="10_oscam_restarts"/>
     <view name="11_oscam_overview"/>
     <view name="12_oscam_config_changes"/>
