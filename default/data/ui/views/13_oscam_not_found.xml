@@ -1,0 +1,101 @@
+<form>
+  <label>13. OScam ecm errors.</label>
+  <description>Shows ecm that are not decoded.</description>
+  <fieldset autoRun="true" submitButton="false">
+    <input type="time" token="global_time" searchWhenChanged="true">
+      <label>Time frame</label>
+      <default>Last 24 hours</default>
+    </input>
+    <input type="dropdown" token="Host" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam |
+          top host</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Client" searchWhenChanged="true">
+      <search>
+        <query>sourcetype=oscam
+          client="*"
+          host=$Host$
+          eventtype="oscam_status-notfound"  |
+          top limit=0 client</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>client</fieldForLabel>
+      <fieldForValue>client</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="ecm" searchWhenChanged="true">
+      <label>ecm error type</label>
+      <search>
+        <query>sourcetype=oscam
+          eventtype="oscam_status-notfound" |
+          rex "oscam.*Real (?&lt;info&gt;[^ ]+)\s" |
+          eval ecm = if(ecm="invalid",if(isnull(info), "invalid_sid", "invalid_ecm"),ecm) |
+          top limit=0 ecm</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>ecm</fieldForLabel>
+      <fieldForValue>ecm</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="radio" token="by" searchWhenChanged="true">
+      <label>Sort by</label>
+      <choice value="client">client</choice>
+      <choice value="ecm">ecm</choice>
+      <default>client</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <search>
+          <query>sourcetype=oscam
+            eventtype="oscam_status-notfound"
+            host="$Host$"
+            client="$Client$" |
+            rex "oscam.*Real (?&lt;info&gt;[^ ]+)\s" |
+            eval ecm = if(ecm="invalid",if(isnull(info), "invalid_sid", "invalid_ecm"),ecm) |
+            search ecm="$ecm$" |
+            timechart count by "$by$" limit=0</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="height">300</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+</form>
