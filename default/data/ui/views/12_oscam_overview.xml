@@ -20,12 +20,12 @@
       <fieldForLabel>host</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
-    </input>	
+    </input>
   </fieldset>
   <row>
     <panel>
       <single>
-        <title>6.1 Readers connecting</title>
+        <title>1 Readers connecting</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connecting"
@@ -34,9 +34,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -51,7 +51,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.2 No route to host</title>
+        <title>2 No route to host</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-no-route-to-host"
@@ -60,9 +60,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -77,7 +77,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.3 Connection refused</title>
+        <title>3 Connection refused</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connetion-refuesed"
@@ -86,9 +86,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -103,7 +103,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.4 Connection timeout</title>
+        <title>4 Connection timeout</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connction-timed-out"
@@ -112,9 +112,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -131,7 +131,7 @@
   <row>
     <panel>
       <single>
-        <title>6.5 Disconnected RTO</title>
+        <title>5 Disconnected RTO</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-rto"
@@ -140,9 +140,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -157,7 +157,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.6 Disconnected close</title>
+        <title>6 Disconnected close</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-close"
@@ -166,9 +166,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -183,7 +183,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.7 Disconnected Normal</title>
+        <title>7 Disconnected Normal</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-disconnected"
@@ -192,9 +192,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -209,7 +209,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.8 Disconnected Inactivity</title>
+        <title>8 Disconnected Inactivity</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-inactivity"
@@ -218,9 +218,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -237,7 +237,7 @@
   <row>
     <panel>
       <single>
-        <title>6.9 Reader initialization error</title>
+        <title>9 Reader initialization error</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-init-error"
@@ -246,9 +246,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -263,7 +263,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.10 DNS error</title>
+        <title>10 DNS error</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_dns-service-not-known"
@@ -272,9 +272,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -289,7 +289,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.11 Connection Refused</title>
+        <title>11 Connection Refused</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connetion-refuesed"
@@ -298,9 +298,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -315,7 +315,7 @@
     </panel>
     <panel>
       <single>
-        <title>6.12 Wrong password</title>
+        <title>12 Wrong password</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-wrong-password"
@@ -324,9 +324,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -343,7 +343,7 @@
   <row>
     <panel>
       <single>
-        <title>7.1 Clients connecting</title>
+        <title>A Clients connecting</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-granted"
@@ -352,9 +352,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -369,7 +369,7 @@
     </panel>
     <panel>
       <single>
-        <title>7.2 Clients disconnecting</title>
+        <title>B Clients disconnecting</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-disconnected"
@@ -378,9 +378,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -395,7 +395,7 @@
     </panel>
     <panel>
       <single>
-        <title>7.3 Duplicate Clients</title>
+        <title>C Duplicate Clients</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-duplicate"
@@ -404,24 +404,24 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">0</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">auto</option>
         <option name="useColors">0</option>
         <option name="useThousandSeparators">1</option>
-        <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
-        <option name="rangeValues">[0,30,70,100]</option>
-        <option name="trendInterval">auto</option>
       </single>
     </panel>
     <panel>
       <single>
-        <title>7.4 Client not found</title>
+        <title>D Client not found</title>
         <search>
           <query>sourcetype=oscam
             host=$Host$
@@ -436,9 +436,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
@@ -453,7 +453,7 @@
     </panel>
     <panel>
       <single>
-        <title>7.5 Invalid Clients</title>
+        <title>E Invalid Clients</title>
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-wrong-password-or-disabled"
@@ -462,9 +462,9 @@
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="drilldown">none</option>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
