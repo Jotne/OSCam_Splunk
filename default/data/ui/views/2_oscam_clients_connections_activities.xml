@@ -7,41 +7,46 @@
       <default>Last 24 hours</default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
       <search>
         <query>sourcetype=oscam |
-          top host</query>
+          top limit=0 host |
+          eval info=host." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>host</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Client" searchWhenChanged="true">
+      <label>Client</label>
       <search>
         <query>sourcetype=oscam
           client="*"
           host=$Host$
           eventtype="oscam_client*" |
-          top limit=0 client</query>
+          top limit=0 client |
+          eval info=client." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>client</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>client</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Span" searchWhenChanged="true">
-      <label>Time span</label>
-      <default>10</default>
-      <choice value="1">1 min</choice>
-      <choice value="5">5 min</choice>
-      <choice value="10">10 min</choice>
-      <choice value="20">20 min</choice>
-      <choice value="60">1 hour</choice>
-      <choice value="120">2 hour</choice>
+      <label>Time Span</label>
+      <choice value="bins=100">Default</choice>
+      <choice value="span=1m">1 min</choice>
+      <choice value="span=5m">5 min</choice>
+      <choice value="span=10m">10 min</choice>
+      <choice value="span=20m">20 min</choice>
+      <choice value="span=1h">1 hour</choice>
+      <choice value="span=2h">2 hour</choice>
+      <default>bins=100</default>
     </input>
   </fieldset>
   <row>
@@ -53,8 +58,7 @@
             eventtype="oscam_client-granted"
             client=$Client$
             host=$Host$ |
-            timechart
-            span=$Span$m count by client limit=0</query>
+            timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -103,7 +107,7 @@
             client=$Client$
             client!=anonymous
             host=$Host$ |
-            timechart  span=$Span$m count by client limit=0</query>
+            timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -151,7 +155,7 @@
             eventtype="oscam_client-duplicate"
             client=$Client$
             host=$Host$ |
-            timechart  span=$Span$m count by client limit=0</query>
+            timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -202,7 +206,7 @@
             transaction session_id |
             search eventtype="oscam_client-disconnected" eventtype="oscam_client-not-found" |<![CDATA[rex "account '(?<user>[^']+)'"]]>|
             eval info=user."@".src_ip |
-            timechart  span=$Span$m count by info limit=0</query>
+            timechart $Span$ count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -255,7 +259,7 @@
             eventtype="oscam_client-wrong-password-or-disabled"
             client=$Client$ |
             eval info=client."@".src_ip |
-            timechart span=$Span$m count by info limit=0</query>
+            timechart $Span$ count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -308,7 +312,7 @@
             eventtype="oscam_client-disabled"
             client=$Client$ |
             eval info=client."@".src_ip |
-            timechart span=$Span$m count by info limit=0</query>
+            timechart $Span$ count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -355,7 +359,7 @@
           <query>sourcetype=oscam
             host=$Host$
             ecm=expdate |
-            timechart span=$Span$m count by client limit=0</query>
+            timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
