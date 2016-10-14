@@ -9,14 +9,14 @@
     <view name="7_oscam_clients_ecm_requests"/>
     <view name="8_oscam_live_view"/>
     <view name="9_oscam_clients_map_location"/>
-    <view name="10_oscam_restarts"/>
-    <view name="11_oscam_overview"/>
-    <view name="12_oscam_config_changes"/>
-    <view name="13_oscam_not_found"/>
+    <view name="10_oscam_servers_map_location"/>
+    <view name="11_oscam_restarts"/>
+    <view name="12_oscam_overview"/>
+    <view name="13_oscam_config_changes"/>
+    <view name="14_oscam_not_found"/>
   </collection>
   <view name="information"/>
   <view name="reports"/>
   <view name="dashboards"/>
   <view name="search"/>
 </nav>
-
