@@ -1,0 +1,103 @@
+<form>
+  <label>10. OSCam Serves map location</label>
+  <description>Not all ISP shows city (shows unknown) but all shows country correct. Zoom in to see better location. This shows only clients that connects to server (shows IP). Increase Time frame to see more servers.</description>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="global_time">
+      <label>Time frame</label>
+      <default>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
+      <search>
+        <query>sourcetype=oscam  
+          eventtype="oscam_reader-dns-resolved" 
+          OR eventtype="oscam_reader-creating-device" |
+          transaction maxspan=2s dns |
+          search eventtype="oscam_reader-dns-resolved" 
+          eventtype="oscam_reader-creating-device" |
+          search server=$Server$ |
+          top limit=0 host</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Server" searchWhenChanged="true">
+      <label>Server</label>
+      <search>
+        <query>sourcetype=oscam  
+          eventtype="oscam_reader-dns-resolved" 
+          OR  eventtype="oscam_reader-creating-device" |
+          transaction maxspan=2s dns |
+          search eventtype="oscam_reader-dns-resolved" 
+          eventtype="oscam_reader-creating-device" |
+          search host=$Host$ |
+          top limit=0 server | sort server</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <fieldForLabel>server</fieldForLabel>
+      <fieldForValue>server</fieldForValue>
+      <default>*</default>
+    </input>
+    <input token="IP" type="radio">
+      <label>Show IP</label>
+      <choice value="server.&quot; &quot;.City.&quot;-&quot;.Country">no</choice>
+      <choice value="server.&quot; &quot;.City.&quot;-&quot;.Country.&quot;(&quot;.ip.&quot;)&quot;">yes</choice>
+      <default>server." ".City."-".Country</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <map>
+        <search>
+          <query>sourcetype=oscam  
+            eventtype="oscam_reader-dns-resolved" 
+            OR  eventtype="oscam_reader-creating-device" |
+            transaction maxspan=2s dns |
+            search eventtype="oscam_reader-dns-resolved" 
+            eventtype="oscam_reader-creating-device" |
+            search host=$Host$
+            server=$Server$ |
+            eval info=server."-".ip |
+            dedup info |
+            iplocation ip | 
+            eval City = if(isnull(City) OR City="", "Unknown", City) | 
+            eval Home = $IP$ |
+            geostats globallimit=0 count by Home</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="mapping.choroplethLayer.colorBins">5</option>
+        <option name="mapping.choroplethLayer.colorMode">auto</option>
+        <option name="mapping.choroplethLayer.maximumColor">0xDB5800</option>
+        <option name="mapping.choroplethLayer.minimumColor">0x2F25BA</option>
+        <option name="mapping.choroplethLayer.neutralPoint">0</option>
+        <option name="mapping.choroplethLayer.shapeOpacity">0.75</option>
+        <option name="mapping.choroplethLayer.showBorder">1</option>
+        <option name="mapping.data.maxClusters">100</option>
+        <option name="mapping.map.center">(0,0)</option>
+        <option name="mapping.map.panning">1</option>
+        <option name="mapping.map.scrollZoom">0</option>
+        <option name="mapping.map.zoom">2</option>
+        <option name="mapping.markerLayer.markerMaxSize">50</option>
+        <option name="mapping.markerLayer.markerMinSize">10</option>
+        <option name="mapping.markerLayer.markerOpacity">0.8</option>
+        <option name="mapping.showTiles">1</option>
+        <option name="mapping.tileLayer.maxZoom">11</option>
+        <option name="mapping.tileLayer.minZoom">2</option>
+        <option name="mapping.tileLayer.tileOpacity">1</option>
+        <option name="mapping.tileLayer.url">http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</option>
+        <option name="mapping.type">marker</option>
+      </map>
+    </panel>
+  </row>
+</form>
