@@ -7,38 +7,45 @@
       <default>Last 24 hours</default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
       <search>
         <query>sourcetype=oscam |
-          top host</query>
+          top limit=0 host |
+          eval info=host." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>host</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Server" searchWhenChanged="true">
       <label>Reader/Proxy(Server)</label>
       <search>
-        <query>sourcetype=oscam           server="*"           host=$Host$ |           top limit=0 server</query>
+        <query>sourcetype=oscam
+          server="*"
+          host=$Host$ |
+          top limit=0 server |
+          eval info=server." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>server</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>server</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Span" searchWhenChanged="true">
-      <label>Time span</label>
-      <default>10</default>
-      <choice value="1">1 min</choice>
-      <choice value="5">5 min</choice>
-      <choice value="10">10 min</choice>
-      <choice value="20">20 min</choice>
-      <choice value="60">1 hour</choice>
-      <choice value="120">2 hour</choice>
+      <label>Time Span</label>
+      <choice value="bins=100">Default</choice>
+      <choice value="span=1m">1 min</choice>
+      <choice value="span=5m">5 min</choice>
+      <choice value="span=10m">10 min</choice>
+      <choice value="span=20m">20 min</choice>
+      <choice value="span=1h">1 hour</choice>
+      <choice value="span=2h">2 hour</choice>
+      <default>bins=100</default>
     </input>
   </fieldset>
   <row>
@@ -50,7 +57,7 @@
             eventtype="oscam_reader-connecting"
             server=$Server$
             host=$Host$ |
-            timechart  span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -98,7 +105,7 @@
             eventtype="oscam_reader-no-route-to-host"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -146,7 +153,7 @@
             eventtype="oscam_reader-connetion-refuesed"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -194,7 +201,7 @@
             eventtype="oscam_reader-connction-timed-out"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -242,7 +249,7 @@
             eventtype="oscam_reader-disconnected-rto"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -290,7 +297,7 @@
             eventtype="oscam_reader-disconnected-close"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -338,7 +345,7 @@
             eventtype="oscam_reader-disconnected-disconnected"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -386,7 +393,7 @@
             eventtype="oscam_reader-disconnected-inactivity"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -434,7 +441,7 @@
             eventtype="oscam_reader-init-error"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -482,7 +489,7 @@
             eventtype="oscam_dns-service-not-known"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -530,7 +537,7 @@
             eventtype="oscam_reader-wrong-password"
             server=$Server$
             host=$Host$ |
-            timechart span=$Span$m count by server limit=0</query>
+            timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
