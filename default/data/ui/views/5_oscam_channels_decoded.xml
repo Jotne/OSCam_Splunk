@@ -10,14 +10,18 @@
       </default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
       <search>
-        <query>sourcetype=oscam |
-          top host</query>
+        <query>sourcetype=oscam 
+            server=$Server$
+	          eventtype="oscam_status-*found"|
+            top limit=0 host |
+            eval info=host." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>host</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
@@ -25,14 +29,15 @@
       <label>Reader/Proxy/Server</label>
       <search>
         <query>sourcetype=oscam
-          server="*"
-          host=$Host$ |
-          top limit=0 server</query>
+            host=$Host$
+	          eventtype="oscam_status-*found" |
+            top limit=0 server |
+            eval info=server." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>server</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>server</fieldForValue>
       <default>*</default>
     </input>
@@ -88,7 +93,7 @@
           <query>sourcetype=oscam
             ecm=*
             ecm!=found
-                ecm!=cache*
+	        ecm!=cache*
             ecm!=expdate
             host=$Host$
             server=$Server$ |
