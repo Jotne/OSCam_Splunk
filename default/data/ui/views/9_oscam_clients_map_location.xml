@@ -1,6 +1,6 @@
 <form>
   <label>9. OSCam Clients map location</label>
-  <description>Not all ISP shows city (shows unknown) but all shows country correct. Zoom in to see better location.</description>
+  <description>Not all ISP shows city (shows unknown) but all shows country correct. Zoom in to see better location. This shows only clients that connects to server (shows IP). Increase Time frame to see more clients.</description>
   <fieldset submitButton="false" autoRun="true">
     <input type="time" token="global_time">
       <label>Time frame</label>
@@ -10,21 +10,28 @@
       </default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
       <search>
-        <query>sourcetype=oscam |
-          top host</query>
+        <query>sourcetype=oscam
+          client=$Client$
+          eventtype="oscam_client-granted" |
+          eval temp=host."-".client |
+          dedup temp |
+          top limit=0 host |
+          eval info=host." (".count." clients)"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>host</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Client" searchWhenChanged="true">
+      <label>Client</label>
       <search>
         <query>sourcetype=oscam
-          client="*"
+          eventtype="oscam_client-granted"
           host=$Host$ |
           top limit=0 client |
           sort client</query>
