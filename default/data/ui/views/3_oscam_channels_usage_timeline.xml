@@ -7,29 +7,37 @@
       <default>Last 24 hours</default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
       <search>
-        <query>sourcetype=oscam |
-          top host</query>
+        <query>sourcetype=oscam
+            client=$Client$
+            server=$Server$
+            eventtype="oscam_status-*found" | 
+            top limit=0 host |
+            eval info=host." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>host</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Client" searchWhenChanged="true">
+      <label>Client</label>
       <search>
         <query>sourcetype=oscam
-          client="*"
-          host=$Host$ |
+          host=$Host$
+          server=$Server$
+          eventtype="oscam_status-*found" |
           top limit=0 client |
-          sort client</query>
+          sort client |
+          eval info=client." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>client</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>client</fieldForValue>
       <default>*</default>
     </input>
@@ -37,33 +45,50 @@
       <label>Reader/Proxy(Server)</label>
       <search>
         <query>sourcetype=oscam
-          server="*"
-          host=$Host$ |
-          top limit=0 server</query>
+          host=$Host$
+          client=$Client$
+          eventtype="oscam_status-*found" |
+          top limit=0 server |
+          eval info=server." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>server</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>server</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Span" searchWhenChanged="true">
-      <label>Time span</label>
-      <default>10</default>
-      <choice value="1">1 min</choice>
-      <choice value="5">5 min</choice>
-      <choice value="10">10 min</choice>
-      <choice value="20">20 min</choice>
-      <choice value="60">1 hour</choice>
-      <choice value="120">2 hour</choice>
+      <label>Time Span</label>
+      <choice value="bins=100">Default</choice>
+      <choice value="span=1m">1 min</choice>
+      <choice value="span=5m">5 min</choice>
+      <choice value="span=10m">10 min</choice>
+      <choice value="span=20m">20 min</choice>
+      <choice value="span=1h">1 hour</choice>
+      <choice value="span=2h">2 hour</choice>
+      <default>bins=100</default>
     </input>
     <input type="dropdown" token="found" searchWhenChanged="true">
       <label>Found/not Found ecm?</label>
       <choice value="oscam_status-*found">Both</choice>
-      <choice value="oscam_status-found">Only found</choice>
-      <choice value="oscam_status-notfound">Only not found</choice>
       <default>oscam_status-*found</default>
+      <fieldForLabel>info</fieldForLabel>
+      <fieldForValue>eventtype</fieldForValue>
+      <search>
+        <query>sourcetype=oscam
+          server=$Server$
+          host=$Host$ 
+          client=$Client$
+          eventtype="oscam_status-*found" |
+          top limit=0 eventtype |         
+          eval label=case(
+            eventtype="oscam_status-found","Found",
+	      		eventtype="oscam_status-notfound","Not Found") |
+          eval info=label." (".count.")"</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
     </input>
     <input type="dropdown" token="split" searchWhenChanged="true">
       <label>Show server/host</label>
@@ -82,7 +107,7 @@
             server=$Server$
             eventtype="$found$" |
             eval channel = if(isnull(channel), sid.":".caid."@".pvid.$split$, channel.$split$) |
-            timechart span=$Span$m count by channel limit=20</query>
+            timechart $Span$ count by channel limit=20</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
