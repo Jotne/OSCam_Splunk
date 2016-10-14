@@ -10,29 +10,38 @@
       </default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
+      <label>Host</label>
       <search>
-        <query>sourcetype=oscam |
-          top host</query>
+        <query>sourcetype=oscam
+            server=$Server$
+            client=$Client$
+			      eventtype="oscam_status-*found" |
+            top limit=0 host |
+            eval info=host." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>host</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
     <input type="dropdown" token="Client" searchWhenChanged="true">
+      <label>Client</label>
       <search>
         <query>sourcetype=oscam
-          client="*"
-          host=$Host$ |
-          top limit=0 client |
-          sort client</query>
+            host=$Host$
+            server=$Server$
+            client!=anonymous
+            eventtype="oscam_status-*found" |
+            top limit=0 client |
+            sort client |
+            eval info=client." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>client</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>client</fieldForValue>
       <default>*</default>
     </input>
@@ -40,15 +49,16 @@
       <label>Reader/Proxy(Server)</label>
       <search>
         <query>sourcetype=oscam
-          server="*"
-          host=$Host$ |
-          top limit=0 server</query>
+            host=$Host$
+            client=$Client$
+		      	eventtype="oscam_status-*found" |
+            top limit=0 server |
+            eval info=server." (".count.")"</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
-        <latest>now</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>server</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>server</fieldForValue>
       <default>*</default>
     </input>
