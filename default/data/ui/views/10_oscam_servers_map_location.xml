@@ -14,12 +14,12 @@
       <search>
         <query>sourcetype=oscam  
           eventtype="oscam_reader-dns-resolved" 
-          OR eventtype="oscam_reader-creating-device" |
-          transaction maxspan=2s dns |
-          search eventtype="oscam_reader-dns-resolved" 
-          eventtype="oscam_reader-creating-device" |
-          search server=$Server$ |
-          top limit=0 host</query>
+          OR eventtype="oscam_reader-creating-device"
+          | transaction maxspan=2s dns
+          | search eventtype="oscam_reader-dns-resolved" 
+            eventtype="oscam_reader-creating-device"
+            server=$Server$
+          | top limit=0 host</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -33,24 +33,26 @@
       <search>
         <query>sourcetype=oscam  
           eventtype="oscam_reader-dns-resolved" 
-          OR  eventtype="oscam_reader-creating-device" |
-          transaction maxspan=2s dns |
-          search eventtype="oscam_reader-dns-resolved" 
-          eventtype="oscam_reader-creating-device" |
-          search host=$Host$ |
-          top limit=0 server | sort server</query>
+          OR  eventtype="oscam_reader-creating-device"
+          | transaction maxspan=2s dns
+          | search eventtype="oscam_reader-dns-resolved" 
+            eventtype="oscam_reader-creating-device"
+            host=$Host$
+          | chart dc(ip) AS u_ip by server
+          | eval info=server." (".u_ip." ip)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>server</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>server</fieldForValue>
       <default>*</default>
     </input>
     <input token="IP" type="radio">
       <label>Show IP</label>
       <choice value="server.&quot; &quot;.City.&quot;-&quot;.Country">no</choice>
-      <choice value="server.&quot; &quot;.City.&quot;-&quot;.Country.&quot;(&quot;.ip.&quot;)&quot;">yes</choice>
+      <choice value="server.&quot; &quot;.City.&quot;-&quot;.Country.&quot; (&quot;.ip.&quot;)&quot;">yes</choice>
       <default>server." ".City."-".Country</default>
     </input>
   </fieldset>
@@ -60,18 +62,20 @@
         <search>
           <query>sourcetype=oscam  
             eventtype="oscam_reader-dns-resolved" 
-            OR  eventtype="oscam_reader-creating-device" |
-            transaction maxspan=2s dns |
-            search eventtype="oscam_reader-dns-resolved" 
-            eventtype="oscam_reader-creating-device" |
-            search host=$Host$
-            server=$Server$ |
-            eval info=server."-".ip |
-            dedup info |
-            iplocation ip | 
-            eval City = if(isnull(City) OR City="", "Unknown", City) | 
-            eval Home = $IP$ |
-            geostats globallimit=0 count by Home</query>
+            OR  eventtype="oscam_reader-creating-device"
+            | transaction maxspan=2s dns
+            | search eventtype="oscam_reader-dns-resolved" 
+              eventtype="oscam_reader-creating-device"
+              host=$Host$
+              server=$Server$
+            | eval info=server."-".ip
+            | dedup info
+            | iplocation ip
+            | eval City = if(isnull(City) OR City=""
+              ,"Unknown"
+              ,City)
+              ,Home = $IP$
+            | geostats globallimit=0 count by Home</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
