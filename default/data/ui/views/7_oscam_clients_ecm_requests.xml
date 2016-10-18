@@ -13,9 +13,11 @@
       <label>Host</label>
       <search>
         <query>sourcetype=oscam
-          ecm=found OR ecm=cache*|
-          top limit=0 host | 
-          eval info=host." (".count.")"</query>
+          ecm=found
+          OR ecm=cache*
+          | top limit=0 host
+          | eval info=host." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -37,14 +39,15 @@
         <title>ecm request last $global_time.earliest$ by client</title>
         <search>
           <query>sourcetype=oscam
-            ecm=found OR ecm=cache*
-            host=$Host$ |
-            chart limit=25 count over client by $by$ |
-            addtotals fieldname=Total |
-            table client Total * |
-            sort - Total |
-            head 15 |
-            fields - Total</query>
+            ecm=found 
+            OR ecm=cache*
+            host=$Host$
+            | chart limit=25 count over client by $by$
+            | addtotals fieldname=Total
+            | table client Total *
+            | sort - Total
+            | head 15
+            | fields - Total</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
