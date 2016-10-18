@@ -5,7 +5,7 @@
     <input type="time" token="global_time">
       <label>Time frame</label>
       <default>
-        <earliest>-24h@h</earliest>
+        <earliest>-30d@d</earliest>
         <latest>now</latest>
       </default>
     </input>
@@ -14,11 +14,12 @@
       <search>
         <query>sourcetype=oscam
           client=$Client$
-          eventtype="oscam_client-granted" |
-          eval temp=host."-".client |
-          dedup temp |
-          top limit=0 host |
-          eval info=host." (".count." clients)"</query>
+          eventtype="oscam_client-granted"
+          | eval temp=host."-".client
+          | dedup temp
+          | top limit=0 host
+          | eval info=host." (".count." clients)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -32,16 +33,27 @@
       <search>
         <query>sourcetype=oscam
           eventtype="oscam_client-granted"
-          host=$Host$ |
-          top limit=0 client |
-          sort client</query>
+          host=$Host$
+          | iplocation src_ip
+          | eval client = if(isnull(Country) OR Country=""
+            ,client." - Internal"
+            ,client)
+          | chart dc(src_ip) AS u_ip by client
+          | eval info=client." (".u_ip." ip)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>client</fieldForLabel>
+      <fieldForLabel>info</fieldForLabel>
       <fieldForValue>client</fieldForValue>
       <default>*</default>
+    </input>
+    <input token="IP" type="radio">
+      <label>Show IP</label>
+      <choice value="client.&quot; &quot;.City.&quot;-&quot;.Country">no</choice>
+      <choice value="client.&quot; &quot;.City.&quot;-&quot;.Country.&quot; (&quot;.src_ip.&quot;)&quot;">yes</choice>
+      <default>client." ".City."-".Country</default>
     </input>
   </fieldset>
   <row>
@@ -52,12 +64,14 @@
             host=$Host$
             client=$Client$
             client!=anonymous
-            eventtype="oscam_client-granted" |
-            iplocation src_ip |
-            eval City = if(isnull(City) OR City="", "Unknown", City) |
-            eval Home = client." ".City."-".Country |
-            dedup Home |
-            geostats globallimit=0 count by Home</query>
+            eventtype="oscam_client-granted"
+            | iplocation src_ip
+            | eval City = if(isnull(City) OR City=""
+              ,"Unknown"
+              ,City)
+              ,Home = $IP$
+            | dedup Home
+            | geostats globallimit=0 count by Home</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
