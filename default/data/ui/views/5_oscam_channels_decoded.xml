@@ -1,66 +1,61 @@
 <form>
   <label>5. OSCam Channels decoded</label>
-  <description>Show what channels are decoded or not decoded, sorted by number of hits and by clients.</description>
-  <fieldset submitButton="false" autoRun="true">
-    <input type="time" token="global_time" searchWhenChanged="true">
-      <label>Time frame</label>
+  <description>Shows what channels clients are looking at.</description>
+  <fieldset submitButton="false">
+    <input type="time" token="global_time">
+      <label>Time fram</label>
       <default>
-        <earliest>rt-1h</earliest>
+        <earliest>rt-1m</earliest>
         <latest>rt</latest>
       </default>
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
       <label>Host</label>
       <search>
-        <query>sourcetype=oscam 
-            server=$Server$
-	          eventtype="oscam_status-*found"|
-            top limit=0 host |
-            eval info=host." (".count.")"</query>
-        <earliest>$global_time.earliest$</earliest>
-        <latest>$global_time.latest$</latest>
+        <query>sourcetype=oscam
+        | top limit=0 host</query>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
       </search>
       <choice value="*">Any</choice>
-      <fieldForLabel>info</fieldForLabel>
+      <fieldForLabel>host</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <default>*</default>
     </input>
-    <input type="dropdown" token="Server" searchWhenChanged="true">
-      <label>Reader/Proxy/Server</label>
-      <search>
-        <query>sourcetype=oscam
-            host=$Host$
-	          eventtype="oscam_status-*found" |
-            top limit=0 server |
-            eval info=server." (".count.")"</query>
-        <earliest>$global_time.earliest$</earliest>
-        <latest>$global_time.latest$</latest>
-      </search>
-      <choice value="*">Any</choice>
-      <fieldForLabel>info</fieldForLabel>
-      <fieldForValue>server</fieldForValue>
-      <default>*</default>
+    <input type="radio" token="Found">
+      <label></label>
+      <choice value="oscam_status-found">Decoded</choice>
+      <choice value="oscam_status-notfound">Not Decoded</choice>
+      <default>oscam_status-found</default>
     </input>
   </fieldset>
   <row>
     <panel>
       <chart>
-        <title>Channels decoded</title>
         <search>
           <query>sourcetype=oscam
-            ecm=found OR ecm=cache*
             host=$Host$
-            server=$Server$ |
-            chart count over channel by client |
-            addtotals fieldname=Total |
-            table channel Total * |
-            sort - Total |
-            head 10 |
-            fields - Total</query>
+            eventtype=$Found$
+            | eval channel = if(isnull(channel) OR channel=""
+              ,caid.":".sid."@".pvid
+              ,channel) 
+            | dedup channel client 
+            | eventstats count by client 
+            | where count&lt;3 
+            | table client channel count 
+            | chart count over channel by client limit=0 
+            | addtotals fieldname=Total 
+            | table channel Total * 
+            | sort - Total | head 30 
+            | fields - Total
+            | transpose 0 header_field=channel column_name=client
+            | addtotals fieldname=Sum 
+            | where Sum!=0
+            | fields - Sum
+            | transpose 0 header_field=client column_name=channel</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="charting.chart">bar</option>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
         <option name="charting.axisTitleX.visibility">collapsed</option>
@@ -70,52 +65,7 @@
         <option name="charting.axisY.scale">linear</option>
         <option name="charting.axisY2.enabled">0</option>
         <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
-        <option name="height">400</option>
-      </chart>
-    </panel>
-    <panel>
-      <chart>
-        <title>Channels not decoded</title>
-        <search>
-          <query>sourcetype=oscam
-            ecm=*
-            ecm!=found
-	        ecm!=cache*
-            ecm!=expdate
-            host=$Host$
-            server=$Server$ |
-            chart count over channel by client |
-            addtotals fieldname=Total |
-            table channel Total * |
-            sort - Total |
-            head 10 |
-            fields - Total</query>
-          <earliest>$global_time.earliest$</earliest>
-          <latest>$global_time.latest$</latest>
-        </search>
         <option name="charting.chart">bar</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">collapsed</option>
-        <option name="charting.axisTitleY.visibility">collapsed</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
         <option name="charting.chart.bubbleMaximumSize">50</option>
         <option name="charting.chart.bubbleMinimumSize">10</option>
         <option name="charting.chart.bubbleSizeBy">area</option>
@@ -125,11 +75,11 @@
         <option name="charting.chart.stackMode">stacked</option>
         <option name="charting.chart.style">shiny</option>
         <option name="charting.drilldown">all</option>
+        <option name="height">600</option>
         <option name="charting.layout.splitSeries">0</option>
         <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
         <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
         <option name="charting.legend.placement">right</option>
-        <option name="height">400</option>
       </chart>
     </panel>
   </row>
