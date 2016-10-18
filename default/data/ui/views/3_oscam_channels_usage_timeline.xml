@@ -12,9 +12,10 @@
         <query>sourcetype=oscam
             client=$Client$
             server=$Server$
-            eventtype="oscam_status-*found" | 
-            top limit=0 host |
-            eval info=host." (".count.")"</query>
+            eventtype="oscam_status-*found"
+            | top limit=0 host
+            | eval info=host." (".count.")"
+            | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -29,10 +30,11 @@
         <query>sourcetype=oscam
           host=$Host$
           server=$Server$
-          eventtype="oscam_status-*found" |
-          top limit=0 client |
-          sort client |
-          eval info=client." (".count.")"</query>
+          eventtype="oscam_status-*found"
+          | top limit=0 client
+          | sort client
+          | eval info=client." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -47,9 +49,10 @@
         <query>sourcetype=oscam
           host=$Host$
           client=$Client$
-          eventtype="oscam_status-*found" |
-          top limit=0 server |
-          eval info=server." (".count.")"</query>
+          eventtype="oscam_status-*found"
+          | top limit=0 server
+          | eval info=server." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -80,12 +83,13 @@
           server=$Server$
           host=$Host$ 
           client=$Client$
-          eventtype="oscam_status-*found" |
-          top limit=0 eventtype |         
-          eval label=case(
+          eventtype="oscam_status-*found"
+          | top limit=0 eventtype 
+          | eval label=case(
             eventtype="oscam_status-found","Found",
-	      		eventtype="oscam_status-notfound","Not Found") |
-          eval info=label." (".count.")"</query>
+	      		eventtype="oscam_status-notfound","Not Found")
+	      	| eval info=label." (".count.")"
+	      	| sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -105,9 +109,9 @@
             host=$Host$
             client=$Client$
             server=$Server$
-            eventtype="$found$" |
-            eval channel = if(isnull(channel), sid.":".caid."@".pvid.$split$, channel.$split$) |
-            timechart $Span$ count by channel limit=20</query>
+            eventtype="$found$"
+            | eval channel = if(isnull(channel), sid.":".caid."@".pvid.$split$, channel.$split$)
+            | timechart $Span$ count by channel limit=20</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
