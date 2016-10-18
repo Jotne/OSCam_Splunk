@@ -1,5 +1,5 @@
 <form>
-  <label>1. OScam Reader Connections activities</label>
+  <label>1. OSCam Reader Connections activities</label>
   <description>What.s going on with your OSCam server? Panels with no data are not shown.</description>
   <fieldset autoRun="true" submitButton="false">
     <input type="time" token="global_time" searchWhenChanged="true">
@@ -9,9 +9,13 @@
     <input type="dropdown" token="Host" searchWhenChanged="true">
       <label>Host</label>
       <search>
-        <query>sourcetype=oscam |
-          top limit=0 host |
-          eval info=host." (".count.")"</query>
+        <query>sourcetype=oscam
+          server=$Server$
+          eventtype="oscam_reader*"
+          OR eventtype="oscam_dns-service-not-known"
+          | top limit=0 host
+          | eval info=host." (".count.")" 
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -24,10 +28,14 @@
       <label>Reader/Proxy(Server)</label>
       <search>
         <query>sourcetype=oscam
-          server="*"
-          host=$Host$ |
-          top limit=0 server |
-          eval info=server." (".count.")"</query>
+          host=$Host$
+          eventtype!=oscam_reader-no*
+          eventtype!=oscam_reader-decrypted-ins54
+          eventtype="oscam_reader*"
+          OR eventtype="oscam_dns-service-not-known"
+          | top limit=0 server
+          | eval info=server." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -56,8 +64,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-connecting"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -104,8 +112,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-no-route-to-host"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -152,8 +160,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-connetion-refuesed"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -200,8 +208,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-connction-timed-out"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -248,8 +256,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-rto"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -296,8 +304,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-close"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -344,8 +352,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-disconnected"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -392,8 +400,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-inactivity"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -440,8 +448,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-init-error"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -488,8 +496,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_dns-service-not-known"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -536,8 +544,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_reader-wrong-password"
             server=$Server$
-            host=$Host$ |
-            timechart $Span$ count by server limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by server limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
