@@ -15,9 +15,10 @@
         <query>sourcetype=oscam
           ecm=found
           OR ecm=cache*
-          NOT channel="*" | 
-          top limit=0 host | 
-          eval info=host." (".count.")"</query>
+          NOT channel="*"
+          | top limit=0 host
+          | eval info=host." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -33,15 +34,15 @@
         <search>
           <query>sourcetype=oscam
           ecm=found OR ecm=cache* NOT channel="*"
-          host=$Host$ |
-          eval oscam_channel = caid.":".sid."@".pvid |
-          eval info=client."-".host |
-          chart count over oscam_channel by info limit=0 |
-          addtotals fieldname=Total |
-          table oscam_channel Total * |
-          sort - Total |
-          head 10 |
-          fields - Total</query>
+          host=$Host$
+          | eval oscam_channel = caid.":".sid."@".pvid
+            , info=client."-".host
+          | chart count over oscam_channel by info limit=0
+          | addtotals fieldname=Total
+          | table oscam_channel Total *
+          | sort - Total
+          | head 15
+          | fields - Total</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
