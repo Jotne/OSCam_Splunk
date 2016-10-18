@@ -1,5 +1,5 @@
 <form>
-  <label>2. OScam Clients Connections activities</label>
+  <label>2. OSCam Clients Connections activities</label>
   <description>What.s going on with your OSCam clients? Panels with no data are hidden. Some panels may take minutes before shown.</description>
   <fieldset autoRun="true" submitButton="false">
     <input type="time" token="global_time" searchWhenChanged="true">
@@ -9,9 +9,13 @@
     <input type="dropdown" token="Host" searchWhenChanged="true">
       <label>Host</label>
       <search>
-        <query>sourcetype=oscam |
-          top limit=0 host |
-          eval info=host." (".count.")"</query>
+        <query>sourcetype=oscam
+          client=$Client$
+          client!=anonymous
+          eventtype="oscam_client*"
+          | top limit=0 host
+          | eval info=host." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -24,11 +28,12 @@
       <label>Client</label>
       <search>
         <query>sourcetype=oscam
-          client="*"
           host=$Host$
-          eventtype="oscam_client*" |
-          top limit=0 client |
-          eval info=client." (".count.")"</query>
+          client!=anonymous
+          eventtype="oscam_client*"
+          | top limit=0 client
+          | eval info=client." (".count.")"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -57,8 +62,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_client-granted"
             client=$Client$
-            host=$Host$ |
-            timechart $Span$ count by client limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -106,8 +111,8 @@
             eventtype="oscam_client-disconnected"
             client=$Client$
             client!=anonymous
-            host=$Host$ |
-            timechart $Span$ count by client limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -154,8 +159,8 @@
           <query>sourcetype=oscam
             eventtype="oscam_client-duplicate"
             client=$Client$
-            host=$Host$ |
-            timechart $Span$ count by client limit=0</query>
+            host=$Host$
+            | timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -201,12 +206,14 @@
         <search>
           <query>sourcetype=oscam
             host=$Host$
-            client=$Client$ OR client=anonymous
-            eventtype="oscam_client-disconnected" OR eventtype="oscam_client-not-found" |
-            transaction session_id |
-            search eventtype="oscam_client-disconnected" eventtype="oscam_client-not-found" |<![CDATA[rex "account '(?<user>[^']+)'"]]>|
-            eval info=user."@".src_ip |
-            timechart $Span$ count by info limit=0</query>
+            eventtype="oscam_client-disconnected" 
+            OR eventtype="oscam_client-not-found"
+            | transaction session_id
+            | search eventtype="oscam_client-disconnected"
+              eventtype="oscam_client-not-found"
+            | rex "account '(?&lt;user&gt;[^']+)'"
+            | eval info=user."@".src_ip
+            | timechart $Span$ count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -252,14 +259,15 @@
         <search>
           <query>sourcetype=oscam
             host=$Host$
-            eventtype="oscam_client-invalid-access" OR
-            eventtype="oscam_client-wrong-password-or-disabled" |
-            transaction session_id |
-            search eventtype="oscam_client-invalid-access"
-            eventtype="oscam_client-wrong-password-or-disabled"
-            client=$Client$ |
-            eval info=client."@".src_ip |
-            timechart $Span$ count by info limit=0</query>
+            client=$Client$
+            eventtype="oscam_client-invalid-access"
+            OR eventtype="oscam_client-wrong-password-or-disabled"
+            | transaction session_id
+            | search eventtype="oscam_client-invalid-access"
+              eventtype="oscam_client-wrong-password-or-disabled"
+              client=$Client$
+            | eval info=client."@".src_ip
+            | timechart $Span$ count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -305,14 +313,15 @@
         <search>
           <query>sourcetype=oscam
             host=$Host$
+            client=$Client$
             eventtype="oscam_client-wrong-password-or-disabled" OR
-            eventtype="oscam_client-disabled" |
-            transaction session_id |
-            search eventtype="oscam_client-wrong-password-or-disabled"
             eventtype="oscam_client-disabled"
-            client=$Client$ |
-            eval info=client."@".src_ip |
-            timechart $Span$ count by info limit=0</query>
+            | transaction session_id
+            | search eventtype="oscam_client-wrong-password-or-disabled"
+              eventtype="oscam_client-disabled"
+              client=$Client$
+            | eval info=client."@".src_ip
+            | timechart $Span$ count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
@@ -358,8 +367,10 @@
         <search>
           <query>sourcetype=oscam
             host=$Host$
-            ecm=expdate |
-            timechart $Span$ count by client limit=0</query>
+            client=$Client$
+            eventtype="oscam_status-notfound"
+            ecm=expdate
+            | timechart $Span$ count by client limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
