@@ -15,9 +15,10 @@
         <query>sourcetype=oscam 
             client=$Client$
             server=$Server$
-            ecm=$Status$|
-            top limit=0 host | 
-            eval info=host." (".count.")"</query>
+            ecm=$Status$
+            | top limit=0 host
+            | eval info=host." (".count.")"
+            | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -32,9 +33,10 @@
         <query>sourcetype=oscam
             host=$Host$
             server=$Server$
-            ecm=$Status$ |
-            top limit=0 client |
-            eval info=client." (".count.")"</query>
+            ecm=$Status$
+            | top limit=0 client
+            | eval info=client." (".count.")"
+            | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -49,9 +51,10 @@
         <query>sourcetype=oscam
             host=$Host$
             client=$Client$
-            ecm=$Status$ |
-            top limit=0 server |
-            eval info=server." (".count.")"</query>
+            ecm=$Status$
+            | top limit=0 server
+            | eval info=server." (".count.")"
+            | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -66,9 +69,10 @@
         <query>sourcetype=oscam
             host=$Host$
             client=$Client$
-            server=$Server$ |
-            top limit=0 ecm |
-            eval info=ecm." (".count.")"</query>
+            server=$Server$
+            | top limit=0 ecm
+            | eval info=ecm." (".count.")"
+            | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -92,17 +96,17 @@
             client=$Client$
             server=$Server$
             ecm=$Status$
-            $Text$ |
-            fields _time, host, client, ecm, server, channel, response_time |
-            fields - _raw</query>
+            $Text$
+            | fields _time, host, client, ecm, server, channel, response_time
+            | fields - _raw</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
-        <option name="wrap">true</option>
-        <option name="rowNumbers">false</option>
+        <option name="count">15</option>
         <option name="dataOverlayMode">heatmap</option>
         <option name="drilldown">cell</option>
-        <option name="count">10</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>
@@ -113,9 +117,9 @@
         <search>
           <query>sourcetype=oscam
           host=$Host$
-          NOT ecm=* |
-          fields _time, host, server, client, eventtype |
-          fields - _raw</query>
+          NOT ecm=*
+          | fields _time, host, server, client, eventtype
+          | fields - _raw</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
