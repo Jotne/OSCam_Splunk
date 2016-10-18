@@ -1,5 +1,5 @@
 <form>
-  <label>14. OScam ecm errors.</label>
+  <label>14. OSCam ecm errors.</label>
   <description>Shows ecm that are not decoded.</description>
   <fieldset autoRun="true" submitButton="false">
     <input type="time" token="global_time" searchWhenChanged="true">
@@ -12,9 +12,10 @@
         <query>sourcetype=oscam 
           eventtype="oscam_status-notfound"
           client="$Client$"
-          ecm="$ecm$"|
-          top limit=0 host |
-          eval info=host." (".count." errors)"</query>
+          ecm="$ecm$"
+          | top limit=0 host
+          | eval info=host." (".count." errors)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -29,9 +30,10 @@
         <query>sourcetype=oscam
           host=$Host$
           ecm="$ecm$"
-          eventtype="oscam_status-notfound"  |
-          top limit=0 client |
-          eval info=client." (".count." errors)"</query>
+          eventtype="oscam_status-notfound"
+          | top limit=0 client
+          | eval info=client." (".count." errors)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -46,11 +48,16 @@
         <query>sourcetype=oscam
           host="$Host$"
           client="$Client$"
-          eventtype="oscam_status-notfound" |
-          rex "oscam.*Real (?&lt;info&gt;[^ ]+)\s" |
-          eval ecm = if(ecm="invalid",if(isnull(info), "invalid_sid", "invalid_ecm"),ecm) |
-          top limit=0 ecm |
-          eval info=ecm." (".count." errors)"</query>
+          eventtype="oscam_status-notfound"
+          | rex "oscam.*Real (?&lt;info&gt;[^ ]+)\s"
+          | eval ecm = if(ecm="invalid"
+            ,if(isnull(info)
+              , "invalid_sid"
+                ,"invalid_ecm")
+                ,ecm)
+          | top limit=0 ecm
+          | eval info=ecm." (".count." errors)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -73,11 +80,11 @@
           <query>sourcetype=oscam
             eventtype="oscam_status-notfound"
             host="$Host$"
-            client="$Client$" |
-            rex "oscam.*Real (?&lt;info&gt;[^ ]+)\s" |
-            eval ecm = if(ecm="invalid",if(isnull(info), "invalid_sid", "invalid_ecm"),ecm) |
-            search ecm="$ecm$" |
-            timechart count by "$by$" limit=0</query>
+            client="$Client$"
+            | rex "oscam.*Real (?&lt;info&gt;[^ ]+)\s"
+            | eval ecm = if(ecm="invalid",if(isnull(info), "invalid_sid", "invalid_ecm"),ecm)
+            | search ecm="$ecm$"
+            | timechart count by "$by$" limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
