@@ -13,9 +13,10 @@
       <label>Host</label>
       <search>
         <query>sourcetype=oscam
-        eventtype="oscam_main-system-name" |
-        top limit=0 host |
-        eval info=host." (".count." restarts)"</query>
+          eventtype="oscam_main-system-name"
+          | top limit=0 host
+          | eval info=host." (".count." restarts)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -31,9 +32,9 @@
         <title>Starting up (may be due to restart from Web GUI, use of remote control, kill of services, reboot of server etc)</title>
         <search>
           <query>sourcetype=oscam
-          eventtype="oscam_main-system-name"
-          host=$Host$ |
-          timechart count by host limit=0</query>
+            eventtype="oscam_main-system-name"
+            host=$Host$
+            | timechart count by host limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -69,9 +70,9 @@
         <title>Restart requested from Web GUI</title>
         <search>
           <query>sourcetype=oscam
-eventtype="oscam_main-restart-requested"
-host=$Host$ |
-          timechart count by host limit=0</query>
+            eventtype="oscam_main-restart-requested"
+            host=$Host$
+            | timechart count by host limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
