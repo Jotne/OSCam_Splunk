@@ -15,9 +15,10 @@
         <query>sourcetype=oscam
             server=$Server$
             client=$Client$
-			      eventtype="oscam_status-*found" |
-            top limit=0 host |
-            eval info=host." (".count.")"</query>
+			      eventtype="$found$"
+			      | top limit=0 host
+			      | eval info=host." (".count.")"
+			      | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -33,10 +34,11 @@
             host=$Host$
             server=$Server$
             client!=anonymous
-            eventtype="oscam_status-*found" |
-            top limit=0 client |
-            sort client |
-            eval info=client." (".count.")"</query>
+            eventtype="$found$"
+            | top limit=0 client
+            | sort client
+            | eval info=client." (".count.")"
+            | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -51,9 +53,10 @@
         <query>sourcetype=oscam
             host=$Host$
             client=$Client$
-		      	eventtype="oscam_status-*found" |
-            top limit=0 server |
-            eval info=server." (".count.")"</query>
+		      	eventtype="$found$"
+		      	| top limit=0 server
+		      	| eval info=server." (".count.")"
+		      	| sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -62,12 +65,26 @@
       <fieldForValue>server</fieldForValue>
       <default>*</default>
     </input>
-    <input type="radio" token="found" searchWhenChanged="true">
+    <input type="dropdown" token="found" searchWhenChanged="true">
       <label>Found/not Found ecm?</label>
       <choice value="oscam_status-*found">Both</choice>
-      <choice value="oscam_status-found">Found</choice>
-      <choice value="oscam_status-notfound">Not found</choice>
-      <default>oscam_status-found</default>
+      <default>oscam_status-*found</default>
+      <fieldForLabel>info</fieldForLabel>
+      <fieldForValue>eventtype</fieldForValue>
+      <search>
+        <query>sourcetype=oscam
+          server=$Server$
+          host=$Host$ 
+          client=$Client$
+          eventtype="oscam_status-*found"
+          | top limit=0 eventtype
+          | eval label=case(
+            eventtype="oscam_status-found","Found",
+	      	  eventtype="oscam_status-notfound","Not Found")
+	      	| eval info=label." (".count.")"</query>
+        <earliest>$global_time.earliest$</earliest>
+        <latest>$global_time.latest$</latest>
+      </search>
     </input>
   </fieldset>
   <row>
@@ -78,9 +95,9 @@
             host=$Host$
             server=$Server$
             client=$Client$
-            eventtype="$found$" |
-            eval Channel = if(isnull(channel), sid.":".caid."@".pvid, channel) |
-            top limit=0 Channel</query>
+            eventtype="$found$"
+            | eval Channel = if(isnull(channel), sid.":".caid."@".pvid, channel)
+            | top limit=0 Channel</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
