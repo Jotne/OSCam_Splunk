@@ -14,9 +14,10 @@
       <search>
         <query>sourcetype=oscam
           eventtype="oscam_webif*refresh"
-          OR eventtype="oscam_config-userdb-reloaded" |
-          top limit=0 host |
-          eval info=host." (".count." changes)"</query>
+          OR eventtype="oscam_config-userdb-reloaded"
+          | top limit=0 host
+          | eval info=host." (".count." changes)"
+          | sort info</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -34,12 +35,12 @@
           <query>sourcetype=oscam 
           eventtype="oscam_webif*refresh" OR 
           eventtype="oscam_config-userdb-reloaded" 
-          host=$Host$ | 
-          eval info=case(
+          host=$Host$
+          | eval info=case(
             eventtype="oscam_config-userdb-reloaded","User edit (file)",
 				    eventtype="oscam_webif-server-refresh","Proxy edit (web)",
-				    eventtype="oscam_webif-clients-refresh","User edit (web)") | 
-          timechart  count by info limit=0</query>
+				    eventtype="oscam_webif-clients-refresh","User edit (web)")
+				  | timechart  count by info limit=0</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
           <progress>
