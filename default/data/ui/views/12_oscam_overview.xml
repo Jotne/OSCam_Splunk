@@ -11,8 +11,8 @@
     </input>
     <input type="dropdown" token="Host" searchWhenChanged="true">
       <search>
-        <query>sourcetype=oscam |
-          top limit=0 host</query>
+        <query>sourcetype=oscam
+          | top limit=0 host</query>
         <earliest>$global_time.earliest$</earliest>
         <latest>$global_time.latest$</latest>
       </search>
@@ -29,8 +29,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connecting"
-            host=$Host$ |
-            timechart  count</query>
+            host=$Host$
+            | timechart  count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -55,8 +55,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-no-route-to-host"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -81,8 +81,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connetion-refuesed"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -107,8 +107,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connction-timed-out"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -135,8 +135,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-rto"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -161,8 +161,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-close"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -187,8 +187,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-disconnected"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -213,8 +213,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-disconnected-inactivity"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -241,8 +241,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-init-error"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -267,8 +267,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_dns-service-not-known"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -293,8 +293,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-connetion-refuesed"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -319,8 +319,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_reader-wrong-password"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -347,8 +347,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-granted"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -373,8 +373,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-disconnected"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -399,8 +399,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-duplicate"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -425,14 +425,14 @@
         <search>
           <query>sourcetype=oscam
             host=$Host$
-            eventtype="oscam_client-disconnected" OR
-            eventtype="oscam_client-not-found" |
-            transaction session_id |
-            search eventtype="oscam_client-disconnected"
-            eventtype="oscam_client-not-found" |
-            rex "account '(?&lt;user&gt;[^']+)'" |
-            eval info=user."@".src_ip |
-            timechart count</query>
+            eventtype="oscam_client-disconnected" 
+            OR eventtype="oscam_client-not-found"
+            | transaction session_id
+            | search eventtype="oscam_client-disconnected"
+              eventtype="oscam_client-not-found"
+            | rex "account '(?&lt;user&gt;[^']+)'"
+            | eval info=user."@".src_ip
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
@@ -457,8 +457,8 @@
         <search>
           <query>sourcetype=oscam
             eventtype="oscam_client-wrong-password-or-disabled"
-            host=$Host$ |
-            timechart count</query>
+            host=$Host$
+            | timechart count</query>
           <earliest>$global_time.earliest$</earliest>
           <latest>$global_time.latest$</latest>
         </search>
